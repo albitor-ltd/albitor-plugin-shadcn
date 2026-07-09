@@ -84,7 +84,11 @@
       outline-offset: 2px;
     }
 
-    .container { max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px; }
+    /* Shared preview skeleton: a single 960px centred content column with a
+       consistent 24px gutter, matched across all four Albitor DS previews. */
+    .container { max-width: 960px; margin: 0 auto; padding: 24px 24px 80px; }
+    /* Narrow surfaces (card + dialog) share one max-width across the four. */
+    .preview-narrow { max-width: 480px; }
 
     header.top {
       position: sticky; top: 0; z-index: 20;
@@ -216,10 +220,9 @@
     #tab-c:checked ~ .tablist label[for="tab-c"] { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px hsl(240 4% 10% / .1); }
     #tab-a:checked ~ #panel-a, #tab-b:checked ~ #panel-b, #tab-c:checked ~ #panel-c { display: block; }
 
-    /* --- Dialog (static example) --- */
-    .dialog-frame { border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(0 0% 0% / .04); padding: 28px 20px; display: flex; justify-content: center; }
-    .dark .dialog-frame { background: hsl(0 0% 100% / .03); }
-    .dialog { background: hsl(var(--popover)); color: hsl(var(--popover-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); max-width: 440px; width: 100%; padding: 24px; box-shadow: 0 10px 30px hsl(240 4% 10% / .25); }
+    /* --- Dialog (static example) — left-aligned narrow surface, shared skeleton --- */
+    .dialog-frame { display: block; }
+    .dialog { background: hsl(var(--popover)); color: hsl(var(--popover-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); max-width: 480px; padding: 24px; box-shadow: 0 10px 30px hsl(240 4% 10% / .25); }
     .dialog h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
     .dialog p { margin: 0 0 20px; color: hsl(var(--muted-foreground)); font-size: 14px; }
     .dialog .actions { display: flex; justify-content: flex-end; gap: 10px; }
@@ -345,7 +348,7 @@
 
     <!-- 6. Card -->
     <h2 class="section">Card</h2>
-    <div class="grid cols-2">
+    <div class="preview-narrow">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Project Atlas</h3>
