@@ -10,6 +10,10 @@
        Hand-authored, build-free rendering of the shadcn/ui look so this
        page opens standalone from file:// with no Tailwind/network.
        Values mirror shadcn/ui's CSS variables (HSL channels).
+
+       Layout follows the shared preview comparison spec (PREVIEW-SPEC.md):
+       the same screen, sample data, and copy as the other Albitor
+       design-system previews, rendered with shadcn/ui components.
     ------------------------------------------------------------------ */
     :root {
       --background: 0 0% 100%;
@@ -32,6 +36,8 @@
       --input: 240 5.9% 90%;
       --ring: 240 10% 3.9%;
       --success: 142 71% 45%;
+      --warning: 38 92% 50%;
+      --info: 217 91% 60%;
       --radius: 0.5rem;
     }
     .dark {
@@ -55,6 +61,8 @@
       --input: 240 3.7% 15.9%;
       --ring: 240 4.9% 83.9%;
       --success: 142 65% 47%;
+      --warning: 38 90% 55%;
+      --info: 217 91% 65%;
     }
 
     * { box-sizing: border-box; }
@@ -116,11 +124,7 @@
     .btn-outline:hover { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
     .btn-ghost { background: transparent; color: hsl(var(--foreground)); }
     .btn-ghost:hover { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
-    .btn-link { background: transparent; color: hsl(var(--primary)); text-underline-offset: 4px; padding: 0 4px; }
-    .btn-link:hover { text-decoration: underline; }
     .btn-sm { height: 36px; padding: 0 12px; font-size: 13px; }
-    .btn-lg { height: 44px; padding: 0 32px; }
-    .btn-icon { width: 40px; height: 40px; padding: 0; }
     .icon { width: 16px; height: 16px; display: inline-block; vertical-align: middle; }
 
     /* --- Badge --- */
@@ -129,11 +133,12 @@
       padding: 2px 10px; font-size: 12px; font-weight: 600; line-height: 1.4;
       border: 1px solid transparent;
     }
-    .badge-default { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
     .badge-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
     .badge-destructive { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
     .badge-outline { border-color: hsl(var(--border)); color: hsl(var(--foreground)); }
+    .badge-info { background: hsl(var(--info)); color: #fff; }
     .badge-success { background: hsl(var(--success)); color: #fff; }
+    .badge-warning { background: hsl(var(--warning)); color: #1f1400; }
 
     /* --- Card --- */
     .card {
@@ -162,9 +167,12 @@
     .field-desc { color: hsl(var(--muted-foreground)); font-size: 12px; margin-top: 6px; }
     .field-error { color: hsl(var(--destructive)); font-size: 12px; margin-top: 6px; font-weight: 500; }
     .input.err { border-color: hsl(var(--destructive)); }
+    fieldset.group { border: 0; padding: 0; margin: 0; }
+    fieldset.group legend { font-size: 13px; font-weight: 500; margin-bottom: 8px; padding: 0; }
 
     /* Checkbox */
     .check-row { display: flex; align-items: flex-start; gap: 10px; }
+    .check-row + .check-row { margin-top: 8px; }
     input.checkbox {
       appearance: none; -webkit-appearance: none; margin: 0; width: 16px; height: 16px;
       border: 1px solid hsl(var(--primary)); border-radius: 4px; background: hsl(var(--background));
@@ -175,12 +183,6 @@
       content: ""; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px;
       border: solid hsl(var(--primary-foreground)); border-width: 0 2px 2px 0; transform: rotate(45deg);
     }
-    /* Switch */
-    .switch { appearance: none; -webkit-appearance: none; cursor: pointer; margin: 0;
-      width: 40px; height: 22px; border-radius: 9999px; background: hsl(var(--input)); position: relative; transition: background .15s; flex: 0 0 auto; }
-    .switch:checked { background: hsl(var(--primary)); }
-    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 9999px; background: hsl(var(--background)); transition: transform .15s; box-shadow: 0 1px 2px hsl(240 4% 10% / .3); }
-    .switch:checked::after { transform: translateX(18px); }
     /* Radio */
     input.radio { appearance: none; -webkit-appearance: none; margin: 0; width: 16px; height: 16px; border-radius: 9999px; border: 1px solid hsl(var(--primary)); position: relative; cursor: pointer; flex: 0 0 auto; margin-top: 2px; }
     input.radio:checked::after { content: ""; position: absolute; inset: 3px; border-radius: 9999px; background: hsl(var(--primary)); }
@@ -189,6 +191,10 @@
     .alert { border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 14px 16px; display: flex; gap: 12px; background: hsl(var(--background)); }
     .alert-title { font-weight: 600; margin: 0 0 2px; font-size: 14px; }
     .alert-desc { color: hsl(var(--muted-foreground)); margin: 0; font-size: 13px; }
+    .alert-info { border-color: hsl(var(--info) / .5); }
+    .alert-info .icon { color: hsl(var(--info)); }
+    .alert-success { border-color: hsl(var(--success) / .5); }
+    .alert-success .icon { color: hsl(var(--success)); }
     .alert-destructive { border-color: hsl(var(--destructive) / .5); color: hsl(var(--destructive)); }
     .alert-destructive .alert-desc { color: hsl(var(--destructive) / .9); }
 
@@ -209,39 +215,31 @@
     #tab-b:checked ~ .tablist label[for="tab-b"],
     #tab-c:checked ~ .tablist label[for="tab-c"] { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px hsl(240 4% 10% / .1); }
     #tab-a:checked ~ #panel-a, #tab-b:checked ~ #panel-b, #tab-c:checked ~ #panel-c { display: block; }
-    .tabs input:focus-visible ~ .tablist label { }
 
-    /* --- Dialog (CSS-only via checkbox) --- */
-    .dialog-toggle { position: absolute; opacity: 0; width: 0; height: 0; }
-    .overlay { display: none; position: fixed; inset: 0; z-index: 50; background: hsl(0 0% 0% / .55); align-items: center; justify-content: center; padding: 20px; }
-    .dialog-toggle:checked ~ .overlay { display: flex; }
+    /* --- Dialog (static example) --- */
+    .dialog-frame { border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(0 0% 0% / .04); padding: 28px 20px; display: flex; justify-content: center; }
+    .dark .dialog-frame { background: hsl(0 0% 100% / .03); }
     .dialog { background: hsl(var(--popover)); color: hsl(var(--popover-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); max-width: 440px; width: 100%; padding: 24px; box-shadow: 0 10px 30px hsl(240 4% 10% / .25); }
     .dialog h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
     .dialog p { margin: 0 0 20px; color: hsl(var(--muted-foreground)); font-size: 14px; }
     .dialog .actions { display: flex; justify-content: flex-end; gap: 10px; }
 
-    /* --- Tooltip (static) --- */
-    .tooltip { position: relative; display: inline-block; }
-    .tooltip .tip { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-size: 12px; padding: 5px 9px; border-radius: 6px; white-space: nowrap; }
-
-    /* --- Progress / Skeleton / Avatar / Separator --- */
-    .progress { height: 8px; background: hsl(var(--secondary)); border-radius: 9999px; overflow: hidden; }
-    .progress > span { display: block; height: 100%; width: 62%; background: hsl(var(--primary)); }
-    .skeleton { background: hsl(var(--muted)); border-radius: 6px; animation: pulse 1.6s ease-in-out infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
-    @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
-    .avatar { width: 40px; height: 40px; border-radius: 9999px; background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
-    .sep { height: 1px; background: hsl(var(--border)); border: 0; margin: 4px 0; }
+    /* --- Empty state --- */
+    .empty { border: 1px dashed hsl(var(--border)); border-radius: var(--radius); padding: 44px 20px; text-align: center; }
+    .empty .glyph { width: 44px; height: 44px; border-radius: 9999px; background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 14px; }
+    .empty h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+    .empty p { margin: 0 0 18px; color: hsl(var(--muted-foreground)); font-size: 13px; }
 
     .note { color: hsl(var(--muted-foreground)); font-size: 12px; margin-top: 8px; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
   </style>
 </head>
 <body>
+  <!-- 1. Page header / title bar -->
   <header class="top">
     <div class="brand">
-      <h1>shadcn/ui</h1>
-      <span class="sub">component preview &middot; Radix UI + Tailwind CSS</span>
+      <h1>Northwind</h1>
+      <span class="sub">Component preview &middot; shadcn/ui + Radix UI</span>
     </div>
     <button class="btn btn-outline btn-sm" id="theme-toggle" type="button" aria-pressed="false">
       <span aria-hidden="true">◐</span> Toggle theme
@@ -250,45 +248,27 @@
 
   <main class="container" id="main-content">
     <p class="lead" style="margin-top:20px">
-      A static, build-free showcase of the core shadcn/ui components in light and dark themes.
-      This is the design-system reference baseline — for real code, scaffold components with
-      <code>npx shadcn@latest add &lt;component&gt;</code>.
+      A static, build-free rendering of the shared preview comparison spec using shadcn/ui
+      components on Radix primitives. Same screen and sample data as the other Albitor
+      design-system previews. For real code, scaffold with <code>npx shadcn@latest add &lt;component&gt;</code>.
     </p>
 
+    <!-- 2. Buttons -->
     <h2 class="section">Buttons</h2>
-    <p class="lead">Variants and sizes, expressed as <code>cva</code> props (<code>variant</code>, <code>size</code>).</p>
     <div class="row">
-      <button class="btn btn-default" type="button">Default</button>
-      <button class="btn btn-secondary" type="button">Secondary</button>
-      <button class="btn btn-destructive" type="button">Destructive</button>
-      <button class="btn btn-outline" type="button">Outline</button>
-      <button class="btn btn-ghost" type="button">Ghost</button>
-      <button class="btn btn-link" type="button">Link</button>
-    </div>
-    <div class="row" style="margin-top:12px">
-      <button class="btn btn-default btn-sm" type="button">Small</button>
-      <button class="btn btn-default" type="button">Default</button>
-      <button class="btn btn-default btn-lg" type="button">Large</button>
-      <button class="btn btn-outline btn-icon" type="button" aria-label="Settings"><span class="icon" aria-hidden="true">⚙</span></button>
-      <button class="btn btn-default" type="button" disabled>Disabled</button>
-    </div>
-    <p class="note">Icon-only buttons carry an <code>aria-label</code> so they have an accessible name.</p>
-
-    <h2 class="section">Badges</h2>
-    <div class="row">
-      <span class="badge badge-default">Default</span>
-      <span class="badge badge-secondary">Secondary</span>
-      <span class="badge badge-destructive">Destructive</span>
-      <span class="badge badge-outline">Outline</span>
-      <span class="badge badge-success">Active</span>
+      <button class="btn btn-default" type="button">Save changes</button>
+      <button class="btn btn-secondary" type="button">Cancel</button>
+      <button class="btn btn-destructive" type="button">Delete account</button>
+      <button class="btn btn-default" type="button" disabled>Submitting…</button>
     </div>
 
-    <h2 class="section">Cards &amp; form fields</h2>
+    <!-- 3. Form fields -->
+    <h2 class="section">Form fields</h2>
     <div class="grid cols-2">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Create account</h3>
-          <p class="card-desc">Enter your details to get started.</p>
+          <h3 class="card-title">Your details</h3>
+          <p class="card-desc">Inputs, select, and validation.</p>
         </div>
         <div class="card-content stack">
           <div>
@@ -296,145 +276,136 @@
             <input class="input" id="name" type="text" placeholder="Ada Lovelace" autocomplete="name">
           </div>
           <div>
-            <label class="lbl" for="email">Email</label>
-            <input class="input" id="email" type="email" placeholder="ada@example.com" autocomplete="email">
-            <p class="field-desc">We'll never share your email.</p>
+            <label class="lbl" for="email">Email address</label>
+            <input class="input err" id="email" type="email" value="ada@" aria-invalid="true" aria-describedby="email-err">
+            <p class="field-error" id="email-err">Enter a valid email address, for example name@example.com</p>
           </div>
           <div>
-            <label class="lbl" for="pw">Password</label>
-            <input class="input err" id="pw" type="password" value="short" aria-invalid="true" aria-describedby="pw-err">
-            <p class="field-error" id="pw-err">Password must be at least 8 characters.</p>
+            <label class="lbl" for="country">Country</label>
+            <select class="select" id="country">
+              <option selected>United Kingdom</option>
+              <option>France</option>
+              <option>Germany</option>
+            </select>
           </div>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-default" type="button">Create account</button>
-          <button class="btn btn-ghost" type="button">Cancel</button>
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Preferences</h3>
-          <p class="card-desc">Selection controls and inputs.</p>
+          <p class="card-desc">Selection controls.</p>
         </div>
         <div class="card-content stack">
-          <div>
-            <label class="lbl" for="plan">Plan</label>
-            <select class="select" id="plan">
-              <option>Starter</option>
-              <option>Pro</option>
-              <option>Enterprise</option>
-            </select>
-          </div>
-          <div>
-            <label class="lbl" for="msg">Message</label>
-            <textarea class="textarea" id="msg" placeholder="Tell us what you're building…"></textarea>
-          </div>
-          <div class="check-row">
-            <input class="checkbox" id="terms" type="checkbox" checked>
-            <label class="lbl" for="terms" style="margin:0">I agree to the terms and conditions</label>
-          </div>
-          <div class="check-row">
-            <input class="switch" id="notify" type="checkbox" role="switch" checked>
-            <label class="lbl" for="notify" style="margin:0">Email notifications</label>
-          </div>
-          <fieldset style="border:0; padding:0; margin:0">
-            <legend class="lbl">Billing period</legend>
-            <div class="check-row"><input class="radio" id="r-month" name="period" type="radio" checked><label class="lbl" for="r-month" style="margin:0">Monthly</label></div>
-            <div class="check-row" style="margin-top:8px"><input class="radio" id="r-year" name="period" type="radio"><label class="lbl" for="r-year" style="margin:0">Annual (save 20%)</label></div>
+          <fieldset class="group">
+            <legend>Notifications</legend>
+            <div class="check-row"><input class="checkbox" id="n-email" type="checkbox" checked><label class="lbl" for="n-email" style="margin:0">Email</label></div>
+            <div class="check-row"><input class="checkbox" id="n-sms" type="checkbox"><label class="lbl" for="n-sms" style="margin:0">SMS</label></div>
+            <div class="check-row"><input class="checkbox" id="n-push" type="checkbox"><label class="lbl" for="n-push" style="margin:0">Push</label></div>
+          </fieldset>
+          <fieldset class="group">
+            <legend>Plan</legend>
+            <div class="check-row"><input class="radio" id="p-free" name="plan" type="radio"><label class="lbl" for="p-free" style="margin:0">Free</label></div>
+            <div class="check-row"><input class="radio" id="p-pro" name="plan" type="radio" checked><label class="lbl" for="p-pro" style="margin:0">Pro</label></div>
+            <div class="check-row"><input class="radio" id="p-ent" name="plan" type="radio"><label class="lbl" for="p-ent" style="margin:0">Enterprise</label></div>
           </fieldset>
         </div>
       </div>
     </div>
 
-    <h2 class="section">Alerts</h2>
-    <div class="stack">
-      <div class="alert">
-        <span class="icon" aria-hidden="true">ℹ</span>
-        <div><p class="alert-title">Heads up</p><p class="alert-desc">You can add components to your app using the CLI.</p></div>
-      </div>
-      <div class="alert alert-destructive">
-        <span class="icon" aria-hidden="true">⚠</span>
-        <div><p class="alert-title">Something went wrong</p><p class="alert-desc">Your session has expired. Please sign in again.</p></div>
-      </div>
-    </div>
+    <!-- 4. Data table -->
+    <h2 class="section">Data table</h2>
+    <div class="card"><div class="card-content" style="overflow-x:auto">
+      <table class="tbl">
+        <caption>Recent orders</caption>
+        <thead><tr><th scope="col">Order</th><th scope="col">Customer</th><th scope="col">Status</th><th scope="col" class="num">Amount</th></tr></thead>
+        <tbody>
+          <tr><td>ORD-1001</td><td>Northwind Ltd</td><td><span class="badge badge-success">Paid</span></td><td class="num">£1,240.00</td></tr>
+          <tr><td>ORD-1002</td><td>Acme Co</td><td><span class="badge badge-warning">Pending</span></td><td class="num">£530.50</td></tr>
+          <tr><td>ORD-1003</td><td>Globex</td><td><span class="badge badge-destructive">Overdue</span></td><td class="num">£98.00</td></tr>
+        </tbody>
+      </table>
+    </div></div>
 
+    <!-- 5. Tabs -->
     <h2 class="section">Tabs</h2>
     <div class="tabs">
       <input type="radio" name="tabs" id="tab-a" checked>
       <input type="radio" name="tabs" id="tab-b">
       <input type="radio" name="tabs" id="tab-c">
-      <div class="tablist" role="tablist" aria-label="Account sections">
-        <label class="tab" for="tab-a">Account</label>
-        <label class="tab" for="tab-b">Password</label>
-        <label class="tab" for="tab-c">Team</label>
+      <div class="tablist" role="tablist" aria-label="Record view">
+        <label class="tab" for="tab-a">Overview</label>
+        <label class="tab" for="tab-b">Activity</label>
+        <label class="tab" for="tab-c">Settings</label>
       </div>
-      <div class="panel" id="panel-a"><p class="lead" style="margin:0">Make changes to your account here. This panel switches with no JavaScript — a CSS-only stand-in for the Radix Tabs primitive.</p></div>
-      <div class="panel" id="panel-b"><p class="lead" style="margin:0">Change your password. Real Radix Tabs adds roving-focus arrow-key navigation and correct <code>tablist</code>/<code>tab</code>/<code>tabpanel</code> roles.</p></div>
-      <div class="panel" id="panel-c"><p class="lead" style="margin:0">Invite and manage teammates.</p></div>
+      <div class="panel" id="panel-a"><p class="lead" style="margin:0">Overview content. Tabs switch between equivalent views of the same screen.</p></div>
+      <div class="panel" id="panel-b"><p class="lead" style="margin:0">Activity content.</p></div>
+      <div class="panel" id="panel-c"><p class="lead" style="margin:0">Settings content.</p></div>
     </div>
 
+    <!-- 6. Card -->
+    <h2 class="section">Card</h2>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Project Atlas</h3>
+        </div>
+        <div class="card-content">
+          <p class="alert-desc" style="margin:0">A short supporting description that sits inside the card content region.</p>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-outline btn-sm" type="button">View details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Dialog (static example) -->
     <h2 class="section">Dialog</h2>
-    <label class="btn btn-outline" for="dlg" tabindex="0" role="button">Open dialog</label>
-    <input type="checkbox" id="dlg" class="dialog-toggle">
-    <div class="overlay">
+    <div class="dialog-frame">
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
-        <h3 id="dlg-title">Delete project?</h3>
-        <p id="dlg-desc">This permanently removes the project and all of its data. This action cannot be undone.</p>
+        <h3 id="dlg-title">Delete account?</h3>
+        <p id="dlg-desc">This permanently removes your account and all associated data. This action cannot be undone.</p>
         <div class="actions">
-          <label class="btn btn-outline" for="dlg" tabindex="0" role="button">Cancel</label>
-          <label class="btn btn-destructive" for="dlg" tabindex="0" role="button">Delete</label>
+          <button class="btn btn-outline" type="button">Cancel</button>
+          <button class="btn btn-destructive" type="button">Delete account</button>
         </div>
       </div>
     </div>
     <p class="note">Static stand-in for the Radix <code>AlertDialog</code>: real usage adds focus trapping, <code>Esc</code>-to-close, and focus return.</p>
 
-    <h2 class="section">Table</h2>
-    <div class="card"><div class="card-content" style="overflow-x:auto">
-      <table class="tbl">
-        <caption>Recent invoices</caption>
-        <thead><tr><th scope="col">Invoice</th><th scope="col">Status</th><th scope="col">Method</th><th scope="col" class="num">Amount</th></tr></thead>
-        <tbody>
-          <tr><td>INV-001</td><td><span class="badge badge-success">Paid</span></td><td>Credit card</td><td class="num">£250.00</td></tr>
-          <tr><td>INV-002</td><td><span class="badge badge-secondary">Pending</span></td><td>PayPal</td><td class="num">£150.00</td></tr>
-          <tr><td>INV-003</td><td><span class="badge badge-destructive">Unpaid</span></td><td>Bank transfer</td><td class="num">£350.00</td></tr>
-        </tbody>
-      </table>
-    </div></div>
+    <!-- 8. Notification / alert set -->
+    <h2 class="section">Alerts</h2>
+    <div class="stack">
+      <div class="alert alert-info">
+        <span class="icon" aria-hidden="true">ℹ</span>
+        <div><p class="alert-title">Information</p><p class="alert-desc">A new version is available.</p></div>
+      </div>
+      <div class="alert alert-success">
+        <span class="icon" aria-hidden="true">✓</span>
+        <div><p class="alert-title">Success</p><p class="alert-desc">Your changes have been saved.</p></div>
+      </div>
+      <div class="alert alert-destructive">
+        <span class="icon" aria-hidden="true">⚠</span>
+        <div><p class="alert-title">Error</p><p class="alert-desc">Could not connect to the server.</p></div>
+      </div>
+    </div>
 
-    <h2 class="section">Tooltip, progress, avatar &amp; more</h2>
-    <div class="grid cols-2">
-      <div class="card"><div class="card-content stack">
-        <div class="row">
-          <span class="tooltip"><span class="tip">Add to library</span></span>
-          <button class="btn btn-secondary btn-sm" type="button">Hover target</button>
-        </div>
-        <div>
-          <label class="lbl" id="prog-lbl">Uploading… 62%</label>
-          <div class="progress" role="progressbar" aria-labelledby="prog-lbl" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><span></span></div>
-        </div>
-        <hr class="sep">
-        <div class="row">
-          <span class="avatar">AL</span>
-          <span class="avatar">JS</span>
-          <div class="stack" style="gap:4px">
-            <span style="font-weight:500">Ada Lovelace</span>
-            <span class="note" style="margin:0">Owner</span>
-          </div>
-        </div>
-      </div></div>
-      <div class="card"><div class="card-content stack">
-        <p class="lead" style="margin:0">Loading placeholders (<code>Skeleton</code>):</p>
-        <div class="row" style="gap:12px">
-          <div class="skeleton" style="width:44px;height:44px;border-radius:9999px"></div>
-          <div class="stack" style="flex:1;gap:8px">
-            <div class="skeleton" style="height:12px;width:60%"></div>
-            <div class="skeleton" style="height:12px;width:85%"></div>
-          </div>
-        </div>
-        <div class="skeleton" style="height:12px;width:100%"></div>
-        <div class="skeleton" style="height:12px;width:92%"></div>
-      </div></div>
+    <!-- 9. Empty state -->
+    <h2 class="section">Empty state</h2>
+    <div class="empty">
+      <span class="glyph" aria-hidden="true">📦</span>
+      <h3>No orders yet</h3>
+      <p>When you create your first order, it will appear here.</p>
+      <button class="btn btn-default" type="button">Create order</button>
+    </div>
+
+    <!-- 10. Tags / badges -->
+    <h2 class="section">Badges</h2>
+    <div class="row">
+      <span class="badge badge-info">Active</span>
+      <span class="badge badge-success">Complete</span>
+      <span class="badge badge-warning">Pending</span>
+      <span class="badge badge-destructive">Failed</span>
     </div>
 
     <p class="note" style="margin-top:40px">
