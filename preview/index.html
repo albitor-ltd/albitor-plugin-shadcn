@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>shadcn/ui — component preview</title>
+  <style>
+    /* ------------------------------------------------------------------
+       shadcn/ui design tokens (default "new-york" style, Zinc base).
+       Hand-authored, build-free rendering of the shadcn/ui look so this
+       page opens standalone from file:// with no Tailwind/network.
+       Values mirror shadcn/ui's CSS variables (HSL channels).
+    ------------------------------------------------------------------ */
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 240 10% 3.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 240 10% 3.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 240 10% 3.9%;
+      --primary: 240 5.9% 10%;
+      --primary-foreground: 0 0% 98%;
+      --secondary: 240 4.8% 95.9%;
+      --secondary-foreground: 240 5.9% 10%;
+      --muted: 240 4.8% 95.9%;
+      --muted-foreground: 240 3.8% 46.1%;
+      --accent: 240 4.8% 95.9%;
+      --accent-foreground: 240 5.9% 10%;
+      --destructive: 0 72% 51%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 240 5.9% 90%;
+      --input: 240 5.9% 90%;
+      --ring: 240 10% 3.9%;
+      --success: 142 71% 45%;
+      --radius: 0.5rem;
+    }
+    .dark {
+      --background: 240 10% 3.9%;
+      --foreground: 0 0% 98%;
+      --card: 240 10% 3.9%;
+      --card-foreground: 0 0% 98%;
+      --popover: 240 10% 3.9%;
+      --popover-foreground: 0 0% 98%;
+      --primary: 0 0% 98%;
+      --primary-foreground: 240 5.9% 10%;
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+      --accent: 240 3.7% 15.9%;
+      --accent-foreground: 0 0% 98%;
+      --destructive: 0 63% 45%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 15.9%;
+      --ring: 240 4.9% 83.9%;
+      --success: 142 65% 47%;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+        Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Focus ring — the shadcn focus-visible:ring pattern */
+    :focus-visible {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px; }
+
+    header.top {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 14px 20px;
+      background: hsl(var(--background) / 0.8);
+      backdrop-filter: saturate(180%) blur(8px);
+      border-bottom: 1px solid hsl(var(--border));
+    }
+    header.top .brand { display: flex; align-items: baseline; gap: 10px; }
+    header.top h1 { font-size: 16px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+    header.top .sub { color: hsl(var(--muted-foreground)); font-size: 13px; }
+
+    h2.section { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; margin: 40px 0 4px; }
+    p.lead { color: hsl(var(--muted-foreground)); margin: 0 0 18px; }
+    .grid { display: grid; gap: 20px; }
+    .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .stack { display: flex; flex-direction: column; gap: 14px; }
+
+    /* --- Button --- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      white-space: nowrap; border-radius: calc(var(--radius) - 2px);
+      font-size: 14px; font-weight: 500; height: 40px; padding: 0 16px;
+      border: 1px solid transparent; cursor: pointer; transition: background-color .15s, opacity .15s, color .15s;
+      text-decoration: none;
+    }
+    .btn:disabled, .btn[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+    .btn-default { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .btn-default:hover { background: hsl(var(--primary) / .9); }
+    .btn-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+    .btn-secondary:hover { background: hsl(var(--secondary) / .8); }
+    .btn-destructive { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+    .btn-destructive:hover { background: hsl(var(--destructive) / .9); }
+    .btn-outline { border-color: hsl(var(--input)); background: hsl(var(--background)); color: hsl(var(--foreground)); }
+    .btn-outline:hover { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
+    .btn-ghost { background: transparent; color: hsl(var(--foreground)); }
+    .btn-ghost:hover { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
+    .btn-link { background: transparent; color: hsl(var(--primary)); text-underline-offset: 4px; padding: 0 4px; }
+    .btn-link:hover { text-decoration: underline; }
+    .btn-sm { height: 36px; padding: 0 12px; font-size: 13px; }
+    .btn-lg { height: 44px; padding: 0 32px; }
+    .btn-icon { width: 40px; height: 40px; padding: 0; }
+    .icon { width: 16px; height: 16px; display: inline-block; vertical-align: middle; }
+
+    /* --- Badge --- */
+    .badge {
+      display: inline-flex; align-items: center; border-radius: 9999px;
+      padding: 2px 10px; font-size: 12px; font-weight: 600; line-height: 1.4;
+      border: 1px solid transparent;
+    }
+    .badge-default { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .badge-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+    .badge-destructive { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+    .badge-outline { border-color: hsl(var(--border)); color: hsl(var(--foreground)); }
+    .badge-success { background: hsl(var(--success)); color: #fff; }
+
+    /* --- Card --- */
+    .card {
+      background: hsl(var(--card)); color: hsl(var(--card-foreground));
+      border: 1px solid hsl(var(--border)); border-radius: var(--radius);
+      box-shadow: 0 1px 2px 0 hsl(240 4% 10% / .05);
+    }
+    .card-header { padding: 20px 20px 0; }
+    .card-title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+    .card-desc { color: hsl(var(--muted-foreground)); font-size: 13px; margin: 4px 0 0; }
+    .card-content { padding: 18px 20px; }
+    .card-footer { padding: 0 20px 20px; display: flex; gap: 10px; }
+
+    /* --- Form controls --- */
+    label.lbl { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    .input, .textarea, select.select {
+      width: 100%; height: 40px; border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--input)); background: hsl(var(--background));
+      color: hsl(var(--foreground)); padding: 0 12px; font-size: 14px; font-family: inherit;
+    }
+    .textarea { height: auto; min-height: 80px; padding: 8px 12px; resize: vertical; }
+    .input::placeholder, .textarea::placeholder { color: hsl(var(--muted-foreground)); }
+    .input:focus-visible, .textarea:focus-visible, select.select:focus-visible {
+      outline: 2px solid hsl(var(--ring)); outline-offset: 1px; border-color: hsl(var(--ring));
+    }
+    .field-desc { color: hsl(var(--muted-foreground)); font-size: 12px; margin-top: 6px; }
+    .field-error { color: hsl(var(--destructive)); font-size: 12px; margin-top: 6px; font-weight: 500; }
+    .input.err { border-color: hsl(var(--destructive)); }
+
+    /* Checkbox */
+    .check-row { display: flex; align-items: flex-start; gap: 10px; }
+    input.checkbox {
+      appearance: none; -webkit-appearance: none; margin: 0; width: 16px; height: 16px;
+      border: 1px solid hsl(var(--primary)); border-radius: 4px; background: hsl(var(--background));
+      cursor: pointer; position: relative; flex: 0 0 auto; margin-top: 2px;
+    }
+    input.checkbox:checked { background: hsl(var(--primary)); }
+    input.checkbox:checked::after {
+      content: ""; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px;
+      border: solid hsl(var(--primary-foreground)); border-width: 0 2px 2px 0; transform: rotate(45deg);
+    }
+    /* Switch */
+    .switch { appearance: none; -webkit-appearance: none; cursor: pointer; margin: 0;
+      width: 40px; height: 22px; border-radius: 9999px; background: hsl(var(--input)); position: relative; transition: background .15s; flex: 0 0 auto; }
+    .switch:checked { background: hsl(var(--primary)); }
+    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 9999px; background: hsl(var(--background)); transition: transform .15s; box-shadow: 0 1px 2px hsl(240 4% 10% / .3); }
+    .switch:checked::after { transform: translateX(18px); }
+    /* Radio */
+    input.radio { appearance: none; -webkit-appearance: none; margin: 0; width: 16px; height: 16px; border-radius: 9999px; border: 1px solid hsl(var(--primary)); position: relative; cursor: pointer; flex: 0 0 auto; margin-top: 2px; }
+    input.radio:checked::after { content: ""; position: absolute; inset: 3px; border-radius: 9999px; background: hsl(var(--primary)); }
+
+    /* --- Alert --- */
+    .alert { border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 14px 16px; display: flex; gap: 12px; background: hsl(var(--background)); }
+    .alert-title { font-weight: 600; margin: 0 0 2px; font-size: 14px; }
+    .alert-desc { color: hsl(var(--muted-foreground)); margin: 0; font-size: 13px; }
+    .alert-destructive { border-color: hsl(var(--destructive) / .5); color: hsl(var(--destructive)); }
+    .alert-destructive .alert-desc { color: hsl(var(--destructive) / .9); }
+
+    /* --- Table --- */
+    table.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table.tbl caption { text-align: left; color: hsl(var(--muted-foreground)); font-size: 13px; padding-bottom: 10px; }
+    table.tbl th, table.tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid hsl(var(--border)); }
+    table.tbl th { color: hsl(var(--muted-foreground)); font-weight: 500; font-size: 13px; }
+    table.tbl td.num, table.tbl th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    table.tbl tbody tr:hover { background: hsl(var(--muted) / .5); }
+
+    /* --- Tabs (CSS-only via radios) --- */
+    .tabs .tablist { display: inline-flex; gap: 2px; background: hsl(var(--muted)); padding: 4px; border-radius: calc(var(--radius) - 2px); }
+    .tabs label.tab { padding: 6px 14px; border-radius: calc(var(--radius) - 4px); font-size: 13px; font-weight: 500; color: hsl(var(--muted-foreground)); cursor: pointer; }
+    .tabs input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .tabs .panel { display: none; padding-top: 16px; }
+    #tab-a:checked ~ .tablist label[for="tab-a"],
+    #tab-b:checked ~ .tablist label[for="tab-b"],
+    #tab-c:checked ~ .tablist label[for="tab-c"] { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px hsl(240 4% 10% / .1); }
+    #tab-a:checked ~ #panel-a, #tab-b:checked ~ #panel-b, #tab-c:checked ~ #panel-c { display: block; }
+    .tabs input:focus-visible ~ .tablist label { }
+
+    /* --- Dialog (CSS-only via checkbox) --- */
+    .dialog-toggle { position: absolute; opacity: 0; width: 0; height: 0; }
+    .overlay { display: none; position: fixed; inset: 0; z-index: 50; background: hsl(0 0% 0% / .55); align-items: center; justify-content: center; padding: 20px; }
+    .dialog-toggle:checked ~ .overlay { display: flex; }
+    .dialog { background: hsl(var(--popover)); color: hsl(var(--popover-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); max-width: 440px; width: 100%; padding: 24px; box-shadow: 0 10px 30px hsl(240 4% 10% / .25); }
+    .dialog h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
+    .dialog p { margin: 0 0 20px; color: hsl(var(--muted-foreground)); font-size: 14px; }
+    .dialog .actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* --- Tooltip (static) --- */
+    .tooltip { position: relative; display: inline-block; }
+    .tooltip .tip { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-size: 12px; padding: 5px 9px; border-radius: 6px; white-space: nowrap; }
+
+    /* --- Progress / Skeleton / Avatar / Separator --- */
+    .progress { height: 8px; background: hsl(var(--secondary)); border-radius: 9999px; overflow: hidden; }
+    .progress > span { display: block; height: 100%; width: 62%; background: hsl(var(--primary)); }
+    .skeleton { background: hsl(var(--muted)); border-radius: 6px; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+    @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+    .avatar { width: 40px; height: 40px; border-radius: 9999px; background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+    .sep { height: 1px; background: hsl(var(--border)); border: 0; margin: 4px 0; }
+
+    .note { color: hsl(var(--muted-foreground)); font-size: 12px; margin-top: 8px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1>shadcn/ui</h1>
+      <span class="sub">component preview &middot; Radix UI + Tailwind CSS</span>
+    </div>
+    <button class="btn btn-outline btn-sm" id="theme-toggle" type="button" aria-pressed="false">
+      <span aria-hidden="true">◐</span> Toggle theme
+    </button>
+  </header>
+
+  <main class="container" id="main-content">
+    <p class="lead" style="margin-top:20px">
+      A static, build-free showcase of the core shadcn/ui components in light and dark themes.
+      This is the design-system reference baseline — for real code, scaffold components with
+      <code>npx shadcn@latest add &lt;component&gt;</code>.
+    </p>
+
+    <h2 class="section">Buttons</h2>
+    <p class="lead">Variants and sizes, expressed as <code>cva</code> props (<code>variant</code>, <code>size</code>).</p>
+    <div class="row">
+      <button class="btn btn-default" type="button">Default</button>
+      <button class="btn btn-secondary" type="button">Secondary</button>
+      <button class="btn btn-destructive" type="button">Destructive</button>
+      <button class="btn btn-outline" type="button">Outline</button>
+      <button class="btn btn-ghost" type="button">Ghost</button>
+      <button class="btn btn-link" type="button">Link</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn btn-default btn-sm" type="button">Small</button>
+      <button class="btn btn-default" type="button">Default</button>
+      <button class="btn btn-default btn-lg" type="button">Large</button>
+      <button class="btn btn-outline btn-icon" type="button" aria-label="Settings"><span class="icon" aria-hidden="true">⚙</span></button>
+      <button class="btn btn-default" type="button" disabled>Disabled</button>
+    </div>
+    <p class="note">Icon-only buttons carry an <code>aria-label</code> so they have an accessible name.</p>
+
+    <h2 class="section">Badges</h2>
+    <div class="row">
+      <span class="badge badge-default">Default</span>
+      <span class="badge badge-secondary">Secondary</span>
+      <span class="badge badge-destructive">Destructive</span>
+      <span class="badge badge-outline">Outline</span>
+      <span class="badge badge-success">Active</span>
+    </div>
+
+    <h2 class="section">Cards &amp; form fields</h2>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Create account</h3>
+          <p class="card-desc">Enter your details to get started.</p>
+        </div>
+        <div class="card-content stack">
+          <div>
+            <label class="lbl" for="name">Full name</label>
+            <input class="input" id="name" type="text" placeholder="Ada Lovelace" autocomplete="name">
+          </div>
+          <div>
+            <label class="lbl" for="email">Email</label>
+            <input class="input" id="email" type="email" placeholder="ada@example.com" autocomplete="email">
+            <p class="field-desc">We'll never share your email.</p>
+          </div>
+          <div>
+            <label class="lbl" for="pw">Password</label>
+            <input class="input err" id="pw" type="password" value="short" aria-invalid="true" aria-describedby="pw-err">
+            <p class="field-error" id="pw-err">Password must be at least 8 characters.</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-default" type="button">Create account</button>
+          <button class="btn btn-ghost" type="button">Cancel</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Preferences</h3>
+          <p class="card-desc">Selection controls and inputs.</p>
+        </div>
+        <div class="card-content stack">
+          <div>
+            <label class="lbl" for="plan">Plan</label>
+            <select class="select" id="plan">
+              <option>Starter</option>
+              <option>Pro</option>
+              <option>Enterprise</option>
+            </select>
+          </div>
+          <div>
+            <label class="lbl" for="msg">Message</label>
+            <textarea class="textarea" id="msg" placeholder="Tell us what you're building…"></textarea>
+          </div>
+          <div class="check-row">
+            <input class="checkbox" id="terms" type="checkbox" checked>
+            <label class="lbl" for="terms" style="margin:0">I agree to the terms and conditions</label>
+          </div>
+          <div class="check-row">
+            <input class="switch" id="notify" type="checkbox" role="switch" checked>
+            <label class="lbl" for="notify" style="margin:0">Email notifications</label>
+          </div>
+          <fieldset style="border:0; padding:0; margin:0">
+            <legend class="lbl">Billing period</legend>
+            <div class="check-row"><input class="radio" id="r-month" name="period" type="radio" checked><label class="lbl" for="r-month" style="margin:0">Monthly</label></div>
+            <div class="check-row" style="margin-top:8px"><input class="radio" id="r-year" name="period" type="radio"><label class="lbl" for="r-year" style="margin:0">Annual (save 20%)</label></div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">Alerts</h2>
+    <div class="stack">
+      <div class="alert">
+        <span class="icon" aria-hidden="true">ℹ</span>
+        <div><p class="alert-title">Heads up</p><p class="alert-desc">You can add components to your app using the CLI.</p></div>
+      </div>
+      <div class="alert alert-destructive">
+        <span class="icon" aria-hidden="true">⚠</span>
+        <div><p class="alert-title">Something went wrong</p><p class="alert-desc">Your session has expired. Please sign in again.</p></div>
+      </div>
+    </div>
+
+    <h2 class="section">Tabs</h2>
+    <div class="tabs">
+      <input type="radio" name="tabs" id="tab-a" checked>
+      <input type="radio" name="tabs" id="tab-b">
+      <input type="radio" name="tabs" id="tab-c">
+      <div class="tablist" role="tablist" aria-label="Account sections">
+        <label class="tab" for="tab-a">Account</label>
+        <label class="tab" for="tab-b">Password</label>
+        <label class="tab" for="tab-c">Team</label>
+      </div>
+      <div class="panel" id="panel-a"><p class="lead" style="margin:0">Make changes to your account here. This panel switches with no JavaScript — a CSS-only stand-in for the Radix Tabs primitive.</p></div>
+      <div class="panel" id="panel-b"><p class="lead" style="margin:0">Change your password. Real Radix Tabs adds roving-focus arrow-key navigation and correct <code>tablist</code>/<code>tab</code>/<code>tabpanel</code> roles.</p></div>
+      <div class="panel" id="panel-c"><p class="lead" style="margin:0">Invite and manage teammates.</p></div>
+    </div>
+
+    <h2 class="section">Dialog</h2>
+    <label class="btn btn-outline" for="dlg" tabindex="0" role="button">Open dialog</label>
+    <input type="checkbox" id="dlg" class="dialog-toggle">
+    <div class="overlay">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+        <h3 id="dlg-title">Delete project?</h3>
+        <p id="dlg-desc">This permanently removes the project and all of its data. This action cannot be undone.</p>
+        <div class="actions">
+          <label class="btn btn-outline" for="dlg" tabindex="0" role="button">Cancel</label>
+          <label class="btn btn-destructive" for="dlg" tabindex="0" role="button">Delete</label>
+        </div>
+      </div>
+    </div>
+    <p class="note">Static stand-in for the Radix <code>AlertDialog</code>: real usage adds focus trapping, <code>Esc</code>-to-close, and focus return.</p>
+
+    <h2 class="section">Table</h2>
+    <div class="card"><div class="card-content" style="overflow-x:auto">
+      <table class="tbl">
+        <caption>Recent invoices</caption>
+        <thead><tr><th scope="col">Invoice</th><th scope="col">Status</th><th scope="col">Method</th><th scope="col" class="num">Amount</th></tr></thead>
+        <tbody>
+          <tr><td>INV-001</td><td><span class="badge badge-success">Paid</span></td><td>Credit card</td><td class="num">£250.00</td></tr>
+          <tr><td>INV-002</td><td><span class="badge badge-secondary">Pending</span></td><td>PayPal</td><td class="num">£150.00</td></tr>
+          <tr><td>INV-003</td><td><span class="badge badge-destructive">Unpaid</span></td><td>Bank transfer</td><td class="num">£350.00</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <h2 class="section">Tooltip, progress, avatar &amp; more</h2>
+    <div class="grid cols-2">
+      <div class="card"><div class="card-content stack">
+        <div class="row">
+          <span class="tooltip"><span class="tip">Add to library</span></span>
+          <button class="btn btn-secondary btn-sm" type="button">Hover target</button>
+        </div>
+        <div>
+          <label class="lbl" id="prog-lbl">Uploading… 62%</label>
+          <div class="progress" role="progressbar" aria-labelledby="prog-lbl" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+        </div>
+        <hr class="sep">
+        <div class="row">
+          <span class="avatar">AL</span>
+          <span class="avatar">JS</span>
+          <div class="stack" style="gap:4px">
+            <span style="font-weight:500">Ada Lovelace</span>
+            <span class="note" style="margin:0">Owner</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="card"><div class="card-content stack">
+        <p class="lead" style="margin:0">Loading placeholders (<code>Skeleton</code>):</p>
+        <div class="row" style="gap:12px">
+          <div class="skeleton" style="width:44px;height:44px;border-radius:9999px"></div>
+          <div class="stack" style="flex:1;gap:8px">
+            <div class="skeleton" style="height:12px;width:60%"></div>
+            <div class="skeleton" style="height:12px;width:85%"></div>
+          </div>
+        </div>
+        <div class="skeleton" style="height:12px;width:100%"></div>
+        <div class="skeleton" style="height:12px;width:92%"></div>
+      </div></div>
+    </div>
+
+    <p class="note" style="margin-top:40px">
+      Rendered from hand-authored CSS mirroring the shadcn/ui "new-york" style with a Zinc base colour.
+      Colours are the real shadcn CSS-variable tokens; components are static representations of the Radix-backed originals.
+    </p>
+  </main>
+
+  <script>
+    // Theme toggle — swaps the .dark class, respecting the OS preference initially.
+    // No external libraries; CSP-safe; works from file://.
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('theme-toggle');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      function apply(dark) {
+        root.classList.toggle('dark', dark);
+        btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+      }
+      apply(prefersDark);
+      btn.addEventListener('click', function () {
+        apply(!root.classList.contains('dark'));
+      });
+    })();
+  </script>
+</body>
+</html>
