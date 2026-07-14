@@ -1,6 +1,8 @@
 ---
 name: shadcn-design-system
 description: Use when building, reviewing, or discussing a modern web app frontend that should follow shadcn/ui — any React/Next.js (or Svelte/Vue port) UI built on shadcn/ui components, Radix UI primitives, and Tailwind CSS. Covers the component registry and the Radix primitive each wraps, page and form patterns, the CSS-variable theming / Tailwind token system, and how to consume shadcn/ui (copy-in ownership model, the CLI, cn(), cva variants) with accessibility built in.
+metadata:
+  capability: design-system
 ---
 
 # shadcn/ui design system
