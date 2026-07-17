@@ -70,8 +70,13 @@ Single choice from many → `Select` (short) or Combobox (long/searchable). Acti
 ### Loading and optimistic UI
 Use `Skeleton` placeholders that match the eventual layout; set `aria-busy` on the region and announce when content arrives (4.1.3). For optimistic updates, roll back visibly and announce the failure.
 
+### Async status without a manual refresh
+When a resource has an async processing state (e.g. "processing" → "completed"), reflect the outcome on its own — poll or refetch (React Query / SWR `refetchInterval`, or a WebSocket/SSE subscription) and update the row or detail in place. The user should never have to navigate away and back, or hard-refresh, to see an item finish. Announce the transition (`aria-live` / Sonner toast, 4.1.3) and update any status `Badge` accordingly.
+
 ## Theming and consistency patterns
 
 - **Dark mode**: theme via CSS variables + a `.dark` class (see `styles.md`); a `next-themes`-style toggle flips the class. Test both themes for contrast — `text-muted-foreground` on tinted surfaces is the usual failure.
 - **Consistent components for the same job**: the same action uses the same component and label everywhere (WCAG 3.2.4) — e.g. "delete" is always an `AlertDialog` with a destructive confirm, "add" is always the same primary `Button`.
 - **Variants over one-offs**: if you keep writing the same class combination, add a `cva` variant to the component instead of duplicating class strings.
+- **Human labels over raw IDs**: show friendly, human-readable names in the UI ("Speaker 1", not `spk_0`); keep the raw identifier for the URL, `key`, or API call, never as the visible label.
+- **Keep the document title in sync**: update `document.title` on client-side navigation so the browser tab and history entry reflect the current route or record, not the initial page title.
