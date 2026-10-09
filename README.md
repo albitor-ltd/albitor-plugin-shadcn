@@ -35,6 +35,16 @@ A [Claude Code plugin](https://code.claude.com/docs/en/plugins) that helps you b
 
 - `preview/index.html` — a **self-contained, build-free** kitchen-sink that renders the core shadcn/ui components (buttons and variants, inputs, form fields, card, dialog, tabs, table, badges, alert, checkbox, switch, select, tooltip, and more) in **light and dark** themes. It inlines all CSS/JS — no network, no build step, no server — so it opens straight from `file://`. It is the "what does shadcn/ui look like?" reference consumed by the create/describe-and-build flow, the design-review baseline, and the handover pack. Open it with `/shadcn:preview`.
 
+### Preview tokens
+
+`preview-tokens.json` is the small, generic token set Albitor's look preview paints this house style
+from (albitor-ltd/albitor#3070): fonts, a four-step type scale, radius, density, elevation, and the
+text, border, surface, background and accent colours. Albitor validates it against an allow-list at
+ingest (hex colours, px/rem lengths, plain font-family names, fixed enums) and ignores a file that
+fails. The values are the shadcn/ui default (zinc) theme: Tailwind's `font-sans` stack,
+`text-sm`/`text-base`/`text-xl`/`text-3xl`, `--radius` 0.5rem, and `foreground`, `muted-foreground`,
+`border`, `muted`, `background`, `primary` and `primary-foreground` as hex.
+
 ## Installing
 
 Add the marketplace that lists this plugin, then install:
