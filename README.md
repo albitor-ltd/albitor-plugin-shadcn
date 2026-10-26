@@ -1,3 +1,5 @@
+> **Archived 2026-10-26.** Superseded by [albitor-ltd/albitor-plugins](https://github.com/albitor-ltd/albitor-plugins) (`plugins/shadcn`, tag `shadcn/v0.1.6`). Read-only.
+
 # shadcn/ui design-system plugin (`shadcn`)
 
 A [Claude Code plugin](https://code.claude.com/docs/en/plugins) that helps you build, audit, and preview modern web apps with **shadcn/ui** — accessible components on **Radix UI** primitives, styled with **Tailwind CSS**. It packages the design system and **WCAG 2.2 AA accessibility** into skills, commands, an audit agent, an advisory hook, and a standalone preview page.
